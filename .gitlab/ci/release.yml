@@ -1,0 +1,10 @@
+semantic-release:
+  image: node:20
+  stage: release
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - when: on_success
+  script:
+    - npm ci
+    - npx semantic-release

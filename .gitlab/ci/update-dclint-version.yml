@@ -1,0 +1,38 @@
+check-and-update-dclint-version:
+  stage: update
+  image: node:20
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+  script:
+    - curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o /usr/local/bin/yq
+    - chmod +x /usr/local/bin/yq
+    - latest=$(npm view dclint version)
+    - >
+      echo "Latest version: ${latest}"
+    - current=$(yq -r '.spec.inputs.version.default // ""' templates/dclint.yml)
+    - >  
+      echo "Current version: ${current}"
+    - |
+      if [ "$current" != "$latest" ]; then
+        echo "Updating dclint.yml..."
+        yq -i ".spec.inputs.version.default = \"$latest\"" templates/dclint.yml
+      
+        echo "Updating README.md..."
+        sed -i "s/`$current`/`$latest`/g" README.md
+
+        git config user.name "gitlab-bot"
+        git config user.email "bot@gitlab.com"
+
+        branch="update-dclint-${latest}"
+        git checkout -b "$branch"
+        git add templates/dclint.yml README.md
+        git commit -m "chore: bump dclint to ${latest}"
+        
+        git push https://gitlab-ci-token:${GITLAB_TOKEN}@gitlab.com/${CI_PROJECT_PATH}.git "$branch"
+
+        curl --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
+          --data "source_branch=$branch&target_branch=main&title=feat: bump dclint to ${latest}" \
+          "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests"
+      else
+        echo "No update needed"
+      fi

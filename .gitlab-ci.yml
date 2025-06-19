@@ -1,0 +1,7 @@
+include:
+  - local: .gitlab/ci/*.yml
+
+stages:
+  - update
+  - tests
+  - release

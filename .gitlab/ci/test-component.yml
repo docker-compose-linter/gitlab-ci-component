@@ -1,0 +1,46 @@
+# Add Component
+include:
+  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/dclint@$CI_COMMIT_SHA
+    inputs:
+      target: "test_data"
+      options: "--recursive"
+      formatter: "codeclimate"
+      job_prefix: "codequality"
+      job_stage: "tests"
+      allow_failure: true
+      rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
+          when: never
+        - when: on_success
+
+# Check if `codequality-dclint` is added.
+test-component:
+  stage: tests
+  image: badouralix/curl-jq
+  needs:
+    - job: codequality-dclint
+      optional: true
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: never
+    - when: on_success
+  script:
+    - |
+      route="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs"
+      job_name="codequality-dclint"
+      jobs=$(curl --silent "$route")
+
+      count=$(echo "$jobs" | jq -r --arg name "$job_name" 'map(select(.name | contains($name))) | length')
+      status=$(echo "$jobs" | jq -r --arg name "$job_name" 'map(select(.name == $name)) | .[0].status')
+      
+      if [ "$count" != "1" ]; then
+        echo "❌ Job '$job_name' not found in pipeline"
+        exit 1
+      fi
+      
+      if [ "$status" != "success" ]; then
+        echo "❌ Job '$job_name' failed (status: $status)"
+        exit 1; 
+      fi
+      
+      echo "✅ Job '$job_name' exists and succeeded"

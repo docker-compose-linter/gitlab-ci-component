@@ -1,0 +1,51 @@
+spec:
+  inputs:
+    job_prefix:
+      description: "Gitlab CI Prefix for the job name"
+      default: "codequality"
+    job_stage:
+      description: "Gitlab CI Stage"
+      default: ".pre"
+    allow_failure:
+      description: "Gitlab CI Allow job failure"
+      type: boolean
+      default: false
+    tags:
+      description: "Gitlab CI Runner tags"
+      type: array
+      default: [ ]
+    rules:
+      description: "GitLab CI Rules"
+      type: array
+      default:
+        - if: '$CI_PIPELINE_SOURCE == "push"'
+    target:
+      description: "DCLint Target path to lint"
+      default: "."
+    options:
+      description: "DCLint Extra CLI options"
+      default: ""
+    formatter:
+      description: "DCLint Formatter"
+      default: "codeclimate"
+    version:
+      description: "DCLint version"
+      default: "3.0.0"
+
+---
+"$[[ inputs.job_prefix ]]-dclint":
+  stage: $[[ inputs.job_stage ]]
+  image:
+    name: "zavoloklom/dclint:$[[ inputs.version ]]-alpine"
+    entrypoint: [ "" ]
+  allow_failure: $[[ inputs.allow_failure ]]
+  interruptible: true
+  script:
+    - /bin/dclint $[[ inputs.target ]] $[[ inputs.options ]] -f $[[ inputs.formatter ]] -o gl-codequality.json
+  artifacts:
+    reports:
+      codequality: gl-codequality.json
+    paths:
+      - gl-codequality.json
+    when: always
+  tags: $[[ inputs.tags ]]
