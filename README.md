@@ -5,7 +5,7 @@
 This GitLab CI/CD component automates Docker Compose linting using
 [DCLint](https://github.com/zavoloklom/docker-compose-linter).
 
-It automatically runs `dclint` and publishes a
+It runs `dclint` and publishes a
 [Code Quality Report](https://docs.gitlab.com/ci/testing/code_quality/#view-code-quality-results) compatible with GitLab
 Merge Request UI.
 
@@ -33,6 +33,12 @@ include:
 ```
 
 > 💡 Requires GitLab 16.8 or later
+
+### Merge Request Widget Example
+
+DCLint highlights issues directly in the GitLab MR widget using Codequality reports.
+
+![DCLint MR Example](./assets/gitlab-pr-widget.png){height=300px}
 
 ## Inputs
 
