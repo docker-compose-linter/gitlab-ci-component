@@ -28,8 +28,8 @@ Merge Request UI.
 ## Usage Example
 
 ```yml
-components:
-  - source: "dclint/ci-component/dclint@v1.0.0"
+include:
+  - component: $CI_SERVER_FQDN/dclint/ci-component/dclint@v1.0.0
 ```
 
 > 💡 Requires GitLab 16.8 or later
