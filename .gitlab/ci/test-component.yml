@@ -9,9 +9,9 @@ include:
       job_stage: "tests"
       allow_failure: true
       rules:
-        - if: '$CI_PIPELINE_SOURCE == "schedule"'
-          when: never
-        - when: on_success
+        - if: '$CI_PIPELINE_SOURCE == "push"'
+          when: on_success
+        - when: never
 
 # Check if `codequality-dclint` is added.
 test-component:
@@ -21,9 +21,9 @@ test-component:
     - job: codequality-dclint
       optional: true
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: on_success
+    - when: never
   script:
     - |
       route="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs"
