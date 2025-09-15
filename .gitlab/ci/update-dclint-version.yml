@@ -18,7 +18,7 @@ check-and-update-dclint-version:
         yq -i ".spec.inputs.version.default = \"$latest\"" templates/dclint.yml
       
         echo "Updating README.md..."
-        sed -i "s/`$current`/`$latest`/g" README.md
+        sed -i "s/\`$current\`/\`$latest\`/g" README.md
 
         git config user.name "gitlab-bot"
         git config user.email "bot@gitlab.com"
