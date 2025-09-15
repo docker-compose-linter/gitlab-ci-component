@@ -15,7 +15,7 @@ check-and-update-dclint-version:
     - |
       if [ "$current" != "$latest" ]; then
         echo "Updating dclint.yml..."
-        yq -i ".spec.inputs.version.default = \"$latest\"" templates/dclint.yml
+        yq -i "select(documentIndex == 0).spec.inputs.version.default = \"$latest\"" templates/dclint.yml
       
         echo "Updating README.md..."
         sed -i "s/\`$current\`/\`$latest\`/g" README.md
