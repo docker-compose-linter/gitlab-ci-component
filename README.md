@@ -47,7 +47,7 @@ DCLint highlights issues directly in the GitLab MR widget using Codequality repo
 | `target`        | `string`  | `.`                                     | DCLint Target path to lint                     |
 | `options`       | `string`  | `""`                                    | DCLint Extra CLI flags (e.g. `--recursive`)    |
 | `formatter`     | `string`  | `codeclimate`                           | DCLint Formatter for output                    |
-| `version`       | `string`  | `3.0.0`                                 | DCLint Version (used as `${version}-alpine`)   |
+| `version`       | `string`  | `3.1.0`                                 | DCLint Version (used as `${version}-alpine`)   |
 | `job_prefix`    | `string`  | `codequality-dclint`                    | GitLab CI Job prefix                           |
 | `job_stage`     | `string`  | `.pre`                                  | GitLab CI Pipeline stage                       |
 | `rules`         | `array`   | `- if: '$CI_PIPELINE_SOURCE == "push"'` | GitLab CI Rules                                |

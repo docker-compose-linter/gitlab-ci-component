@@ -13,7 +13,7 @@ spec:
     tags:
       description: "Gitlab CI Runner tags"
       type: array
-      default: [ ]
+      default: []
     rules:
       description: "GitLab CI Rules"
       type: array
@@ -30,14 +30,13 @@ spec:
       default: "codeclimate"
     version:
       description: "DCLint version"
-      default: "3.0.0"
-
+      default: "3.1.0"
 ---
 "$[[ inputs.job_prefix ]]-dclint":
   stage: $[[ inputs.job_stage ]]
   image:
     name: "zavoloklom/dclint:$[[ inputs.version ]]-alpine"
-    entrypoint: [ "" ]
+    entrypoint: [""]
   allow_failure: $[[ inputs.allow_failure ]]
   interruptible: true
   script:
